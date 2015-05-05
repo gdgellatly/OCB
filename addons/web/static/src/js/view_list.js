@@ -531,7 +531,8 @@ instance.web.ListView = instance.web.View.extend( /** @lends instance.web.ListVi
     },
     reload_record: function (record) {
         var self = this;
-        var fields = this.fields_view.fields;
+        //var fields = this.fields_view.fields;
+        //commented out as creates invisible nested one2manys
         // Use of search_read instead of read to check if we can still read the record (security rules)
         return this.dataset.read_ids(
             [record.get('id')],
@@ -545,10 +546,13 @@ instance.web.ListView = instance.web.View.extend( /** @lends instance.web.ListVi
                 self.records.remove(record);
                 return;
             }
-            _.each(values, function (value, key) {
-                if (fields[key] && fields[key].type === 'many2many')
-                    record.set(key + '__display', false, {silent: true});
-                record.set(key, value, {silent: true});            
+            //_.each(values, function (value, key) {
+            //    if (fields[key] && fields[key].type === 'many2many')
+            //        record.set(key + '__display', false, {silent: true});
+            //    record.set(key, value, {silent: true});
+            // This change made
+            _(_.keys(values)).each(function(key) {
+                record.set(key, values[key], {silent: true});
             });
             record.trigger('change', record);
         });
