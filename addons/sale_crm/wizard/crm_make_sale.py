@@ -52,6 +52,9 @@ class crm_make_sale(osv.osv_memory):
     def view_init(self, cr, uid, fields_list, context=None):
         return super(crm_make_sale, self).view_init(cr, uid, fields_list, context=context)
 
+    def _prepare_order_vals(self, cr, uid, case, context=None):
+        return {}
+
     def makeOrder(self, cr, uid, ids, context=None):
         """
         This function  create Quotation on given case.
@@ -104,6 +107,7 @@ class crm_make_sale(osv.osv_memory):
                     'fiscal_position': fpos,
                     'payment_term':payment_term,
                 }
+                vals.update(self._prepare_order_vals(cr, uid, case, context=context))
                 if partner.id:
                     vals['user_id'] = partner.user_id and partner.user_id.id or uid
                 new_id = sale_obj.create(cr, uid, vals, context=context)
